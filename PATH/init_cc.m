@@ -1,4 +1,5 @@
-function cc = init_cc(nbBits,Gpoly)
+function cc = init_cc(r,nbBits)
+    Gpoly = [133 171];
 % --- Call the stack parameters 
 [K, M, nu, n, k, coderate, StateTable]=getcodeparameters(Gpoly);
 
