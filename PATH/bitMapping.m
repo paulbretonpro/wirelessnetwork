@@ -15,7 +15,7 @@
 % v 1.0 - Robin Gerzaguet.
 
 function qamMat = bitMapping(bitSeq,M)
-scalingFactor	= sqrt(2/3*(M-1));
+scalingFactor	= sqrt(2/3*(2^M-1));
 switch M
     case 1
         % --- BPSK
