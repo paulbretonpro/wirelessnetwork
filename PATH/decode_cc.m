@@ -1,4 +1,7 @@
-function m = decode_cc(r,cc)
+% Apply Conv decoder to input data r
+function m = decode_cc(r)
+    nbBits = length(r)/2 - 8;
+    cc = init_cc(1/2,nbBits);
     mLong = VAharddecode1(r, cc.StateTable, cc.M, cc.k , cc.n);
     m = mLong(1:cc.nbBits);
 end
