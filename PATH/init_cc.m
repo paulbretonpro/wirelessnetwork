@@ -1,4 +1,6 @@
-function cc = init_cc(r,nbBits)
+function cc = init_cc(r,nbBitsCoded)
+    % Init the convolutional decoder based on input coded bits nbBitsCoded
+    % First parameter is the coding rate (e.g 1/2) and the second parameter the length of the sequence to decode
     Gpoly = [133 171];
 % --- Call the stack parameters 
 [K, M, nu, n, k, coderate, StateTable]=getcodeparameters(Gpoly);
@@ -11,7 +13,8 @@ cc.n = n;
 cc.k = k;
 cc.codeRate = coderate;
 cc.StateTable = StateTable;
-nbBitsCoded = 2*nbBits + 2*(nu + 2); 
+%nbBitsCoded = 2*nbBits + 2*(nu + 2); 
+nbBits = nbBitsCoded /2 - nu - 1;
 cc.nbBits = nbBits;
 cc.nbBitsCoded = nbBitsCoded;
 end
