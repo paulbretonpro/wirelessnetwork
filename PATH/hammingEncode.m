@@ -1,6 +1,7 @@
 function y = hammingEncode(x)	
 	% --- Matrix encoder 
-	A = [ 1 1 1;1 1 0;1 0 1;0 1 1];
+	%A = [ 1 1 1;1 1 0;1 0 1;0 1 1];
+	A = [ 0 1 1;1 0 1;1 1 0;1 1 1];
 	G = [eye(4) A];
 	% --- Init output  
 	nL	= floor(length(x) /4);
