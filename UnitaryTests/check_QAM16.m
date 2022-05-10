@@ -13,8 +13,8 @@ bE  = QAM16_demod(y);
 e = sum(xor(bE,b));
 % Print the result 
 if e == 0
-   disp('Test for QPSK mapping is Correct');
+   disp('Test for QAM-16 mapping is Correct');
 else 
-    disp('FAIL test for QPSK demapping');
+    disp('FAIL test for QAM-16 demapping');
 end
 end

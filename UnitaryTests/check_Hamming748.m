@@ -21,7 +21,7 @@ e = sum(xor(b,bD));
 if e == 0
    disp('Test 1 for hamming decoder is Correct [Error recovered when no error]');
 else 
-    disp('FAIL test 1 for hamming decoder is Correct [Error recovered when no error');
+    disp('FAIL test 1 for hamming decoder is NOT correct [Error recovered when no error');
 end
 % -------------
 % Test `1 : Add an error 
@@ -37,7 +37,7 @@ e = sum(xor(b,bD));
 if e == 0
    disp('Test 2 for hamming decoder is Correct [Error corrected]');
 else 
-    disp('FAIL test 2 for hamming decoder is Correct [Error corrected');
+    disp('FAIL test 2 for hamming decoder is NOT Correct [Error corrected');
 end
 % -------------
 % Test 3 : Add two errors 
@@ -53,6 +53,6 @@ e = sum(xor(b,bD));
 if e ~= 0
    disp('Test 3 for hamming decoder is Correct [2 Errors cannot be corrected]');
 else 
-    disp('FAIL test 3 for hamming decoder is Correct [2 Errors cannot be corrected]');
+    disp('FAIL test 3 for hamming decoder is NOT Correct [2 Errors cannot be corrected]');
 end
 end
