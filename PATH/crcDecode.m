@@ -13,5 +13,5 @@ end
 % --- syndrome is now equal to the remainder of xor division
 syndrome = data(1, lenR - lenGW + 2: lenR);
 % --- From syndrom to CRC check 
-err = ??? 
+err = sum(mod(syndrome,2));
 end
