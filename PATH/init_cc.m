@@ -1,6 +1,9 @@
-function cc = init_cc(r,nbBitsCoded)
-    % Init the convolutional decoder based on input coded bits nbBitsCoded
-    % First parameter is the coding rate (e.g 1/2) and the second parameter the length of the sequence to decode
+% Octave version ==> Commenter les oct2poly 
+% Remplacer I par [1 2 3 4 7]
+
+
+
+function cc = init_cc(r,nbBits)
     Gpoly = [133 171];
 % --- Call the stack parameters 
 [K, M, nu, n, k, coderate, StateTable]=getcodeparameters(Gpoly);
@@ -13,8 +16,7 @@ cc.n = n;
 cc.k = k;
 cc.codeRate = coderate;
 cc.StateTable = StateTable;
-%nbBitsCoded = 2*nbBits + 2*(nu + 2); 
-nbBits = nbBitsCoded /2 - nu - 1;
+nbBitsCoded = 2*nbBits + 2*(nu + 2); 
 cc.nbBits = nbBits;
 cc.nbBitsCoded = nbBitsCoded;
 end
@@ -57,11 +59,12 @@ for i=1:k, % for each row of Gpoly
     lastbit=0;
     for j=1:n %for each colum of Gpoly
         if Gpoly(i,j)~=0,
-            binval=oct2poly(Gpoly(i,j));
+            %binval=oct2poly(Gpoly(i,j))
         else
-            binval=zeros(1,NoBits);
+            %binval=zeros(1,NoBits);
         end
-        I=find(binval==1);
+        %I=find(binval==1)
+        I = [1 2 3 4 7];
         if isempty(I)==0, % if non-zero
             bitstart=I(1);
             if bitstart<firstbit,
@@ -76,6 +79,7 @@ for i=1:k, % for each row of Gpoly
     K(i)=lastbit-firstbit+1;
 end
 % Max No of input shift registers needed for each input bit
+K=7
 M=K-1;
 
 %===============================================================
