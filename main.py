@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import cm
+import decode
 
 
 my_data = np.genfromtxt('tfMatrix.csv', delimiter=';')
@@ -42,10 +43,69 @@ def powerDistributionGraph(Z):
     plt.show()
 
 
-#  powerDistributionGraph(Z)
+quamMatrix = tfMatrix_short[2:, :]
 
-quamMatrix = tfMatrix_short[3:, :]
+qamSeq = []
+for i in range(len(quamMatrix)):
+    for el in quamMatrix[i]:
+        qamSeq.append(el)
 
-# powerDistributionGraph(np.absolute(quamMatrix))
+bitSeq = decode.bpsk_demod(qamSeq)
 
-# print(quamMatrix)
+bpsk_first_48_bits = bitSeq[0:48:1]
+
+bitDec = decode.hamming748_decode(bitSeq)
+
+bits48 = decode.hamming748_decode(bpsk_first_48_bits)
+
+cell_ident = decode.bin2dec(bits48[0:18])  # 18 fist bits
+nb_users = decode.bin2dec(bits48[18:24])  # last 6 bits
+
+print(cell_ident)
+print(nb_users)
+
+"""
+# PBCHU every 48 bits
+PBCHU_1 = bitSeq[48:96]
+# print(PBCHU_1.shape)
+
+# List of PBCHU every 48 bits
+print("List of PBCHU every 48 bits")
+j = 1
+for i in range(0, 18, 48):
+    PBCHU_Dec = decode.hamming748_decode(bitSeq[i:i+48])
+    user_ident = PBCHU_Dec[:8]
+    user_ident = decode.bin2dec(user_ident)
+    print("(group index,pos) :(%3d," %
+          j, ",%3d," % i, ") =%3d," % user_ident)
+
+    j += 1
+
+PBCHU_Dec = decode.hamming748_decode(PBCHU_1)
+print(PBCHU_Dec)
+print(PBCHU_Dec.shape)
+user_ident = PBCHU_Dec[:8]
+user_ident = decode.bin2dec(user_ident)
+print(user_ident)
+MCS_PDCCHU = PBCHU_Dec[8:10]
+MCS_PDCCHU = decode.bin2dec(MCS_PDCCHU)
+print(MCS_PDCCHU)
+SYMB_START_PDCCHU = PBCHU_Dec[10:14]
+SYMB_START_PDCCHU = decode.bin2dec(SYMB_START_PDCCHU)
+print(SYMB_START_PDCCHU)
+RB_START_PDCCHU = PBCHU_Dec[14:20]
+RB_START_PDCCHU = decode.bin2dec(RB_START_PDCCHU)
+print(RB_START_PDCCHU)
+HARQ = PBCHU_Dec[20:24]
+HARQ = decode.bin2dec(HARQ)
+print(HARQ)
+dict_PBCHU = {
+    "user_ident": user_ident,
+    "MCS_PDCCHU": MCS_PDCCHU,
+    "Symb_start_PDCCHU": SYMB_START_PDCCHU,
+    "RB_start_PDCCHU": RB_START_PDCCHU,
+    "HARQ_PDCCHU": HARQ
+}
+
+print(dict_PBCHU)
+"""

@@ -43,6 +43,6 @@ def test_qam16():
         0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 1, 1, 0]
 """
 
-test_bpsk()
+print(test_bpsk())
 # test_qpsk()
 # test_qam16()
