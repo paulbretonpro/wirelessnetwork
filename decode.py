@@ -56,3 +56,26 @@ def bin2dec(nb):
     for b in nb:
         n = n + str(b)
     return int(n, 2)
+
+
+def qpsk_demod(qamSeq):
+    res = []
+    for i in range(qamSeq.shape[0]):
+        if qamSeq[i].real > 0:
+            if qamSeq[i].imag > 0:
+                res += [1, 1]
+            else:
+                res += [1, 0]
+        else:
+            if qamSeq[i].imag > 0:
+                res += [0, 1]
+            else:
+                res += [0, 0]
+    return res
+
+
+def pdcchu_decode(stream, MCS):
+    if MCS == 0:
+        return bpsk_demod(stream[:72])
+    elif MCS == 2:
+        return qpsk_demod(stream[:72])
