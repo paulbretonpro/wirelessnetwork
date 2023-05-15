@@ -6,6 +6,10 @@ import decode
 import binary_transformation as binT
 import pdsch
 
+
+""" 
+2.1 Extraction of the time frequency matrix
+"""
 my_data = np.genfromtxt('tfMatrix.csv', delimiter=';')
 mat_complex = my_data[:, 0::2] + 1j*my_data[:, 1::2]
 
@@ -19,7 +23,9 @@ plt.xlabel('N')
 plt.ylabel('Subcarriers')
 # plt.show()
 
-
+""" 
+2.2 PBCH Decoding
+"""
 # 1 313, 312 dernière
 m1 = mat_complex[:, range(1, 624//2+1)]
 m2 = mat_complex[:, range(1024-(624//2), 1024)]
@@ -47,6 +53,7 @@ for i in range(len(qamMatrix)):
         qamSeq.append(el)
 
 bitSeq = decode.bpsk_demod(qamSeq)
+
 
 bpsk_first_48_bits = bitSeq[0:48:1]
 
@@ -88,8 +95,9 @@ def keepOurUserIndent(userIndent):
 user = keepOurUserIndent(3)
 
 
-# 2.3 - PDCCH decoding
-
+"""
+2.3 - PDCCH decoding
+"""
 qamMatrixFlat = qamMatrix.flatten()
 bitSeq2 = decode.pdcchu_decode(qamMatrixFlat[(
     user['SYMB_START']-3) * 624 + (user['RB_START']-1)*12:], user['MCS'])
