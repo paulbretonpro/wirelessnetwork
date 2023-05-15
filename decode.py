@@ -26,6 +26,11 @@ def bpsk_demod(qamSeq):
 
 
 def hamming748_decode(bitSeq):
+    """
+    An error corrector capable of detecting and correcting single bit errors. 
+    The three coded bits are chosen so that each bit position in the code word is covered 
+    by a unique combination of bits, as well as a parity bit.
+    """
     H = np.array([[0, 0, 0, 1, 1, 1, 1], [
                  0, 1, 1, 0, 0, 1, 1], [1, 0, 1, 0, 1, 0, 1]])
     res = []
@@ -59,6 +64,10 @@ def bin2dec(nb):
 
 
 def qpsk_demod(qamSeq):
+    """
+    Implement a QPSK demodulator
+    it takes a complex-valued input qamSeq and produces a binary sequence as output. 
+    """
     res = []
     for i in range(qamSeq.shape[0]):
         if qamSeq[i].real > 0:

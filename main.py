@@ -7,9 +7,31 @@ import binary_transformation as binT
 import pdsch
 
 
+"""
+Nous avons séparer le code en plusieurs fichier pour faciliter la maintenance 
+durant le TP
+
+decode.py: 
+    - bpsk_demode
+    - hamming748_decode
+    - bin2dec
+    - qpsk_demod
+    - pdcchu_decode
+
+pdsch.py: 
+    - demod
+    - fec
+    - crc
+
+"""
+
+
 """ 
 2.1 Extraction of the time frequency matrix
 """
+
+# Pour BPSK il faut supprimer les nombres imaginaire, on garde uniquement
+# 1 et -1 pour correspondre à la configuration de BPSK
 my_data = np.genfromtxt('tfMatrix.csv', delimiter=';')
 mat_complex = my_data[:, 0::2] + 1j*my_data[:, 1::2]
 
@@ -23,10 +45,15 @@ plt.xlabel('N')
 plt.ylabel('Subcarriers')
 # plt.show()
 
+
 """ 
 2.2 PBCH Decoding
 """
+
+# .1 BPSK decoding
+
 # 1 313, 312 dernière
+# one row with 624 bits (only 0 and 1)
 m1 = mat_complex[:, range(1, 624//2+1)]
 m2 = mat_complex[:, range(1024-(624//2), 1024)]
 
@@ -54,8 +81,9 @@ for i in range(len(qamMatrix)):
 
 bitSeq = decode.bpsk_demod(qamSeq)
 
-
 bpsk_first_48_bits = bitSeq[0:48:1]
+
+# .2 Hamming748 decoder
 
 bitDec = decode.hamming748_decode(bitSeq)
 
@@ -64,11 +92,30 @@ bits48 = decode.hamming748_decode(bpsk_first_48_bits)
 cell_ident = decode.bin2dec(bits48[0:18])  # 18 fist bits
 nb_users = decode.bin2dec(bits48[18:24])  # last 6 bits
 
+# In a cellular communication network, a cell_ident is a unique identifier assigned
+# to a specific cell within the network.
+# A cellular network is composed of multiple cells, and each cell has a unique cell identity
+# that distinguishes it from other cells in the network.
+# cell indent 12345
 print(cell_ident)
+# 18 users
 print(nb_users)
+
+# .3 PBCH decoding
 
 
 def keepOurUserIndent(userIndent):
+    """
+    Function to decode and get information of user.
+    18 matrix of 48 bits for 18 users
+    Args:
+        userIndent (int): group number
+
+    Returns:
+        object: information of the user
+    """
+    # the table contain all the data of group
+    # we skip the 48 first bits
     start = 48
     for i in range(18):
         end = start + 48
@@ -94,15 +141,22 @@ def keepOurUserIndent(userIndent):
 
 user = keepOurUserIndent(3)
 
-
 """
 2.3 - PDCCH decoding
 """
+
+# .1 MCS decoding
+
+# (voir function qpsk_demod fichier deocde.py)
+
+# .2 PDCCHU decoding
+
 qamMatrixFlat = qamMatrix.flatten()
+# decode the user's PDCCH channel information from the qamMatrixFlat bit sequence using the values of "SYMB_START"
+# and "RB_START" stored in the "user" variable and the value of "MCS" stored in the "user" variable
 bitSeq2 = decode.pdcchu_decode(qamMatrixFlat[(
     user['SYMB_START']-3) * 624 + (user['RB_START']-1)*12:], user['MCS'])
-
-# 2.3.2 PDCCHU decoding
+# decodes the bit sequence "bitSeq2" obtained from the "pdcchu_decode" function using the Hamming code748
 pdcchu_decode = decode.hamming748_decode(bitSeq2)
 
 pdcchu = dict()
@@ -115,11 +169,15 @@ pdcchu["CRC"] = decode.bin2dec(pdcchu_decode[34:36])
 
 print(pdcchu)
 
-# 2.4.1 FEC and MCS overall functions
+
+"""
+2.4 PDSCH Decodin
+"""
+# .1 FEC and MCS overall functions
 
 # (voir fichier pdsch.py)
 
-# 2.4.2 PDSCH decoding
+# .2 PDSCH decoding
 symbols = qamMatrixFlat[(pdcchu['SYMB']-3)*624+(pdcchu['RB']-1) *
                         12:(pdcchu['SYMB']-3)*624+(pdcchu['RB']-1)*12 + pdcchu['RB_SIZE']*12]
 payload = pdsch.fec(pdsch.demod(symbols, pdcchu['MCS']), pdcchu['MCS'])
